@@ -6,7 +6,7 @@ Show us what you've got by knocking it into shape!
 
 ## Practicalities
 
-Please make a fork of this project for your work.
+Please create a new private repository to host your solution.
 
 Each commit you make should relate to a single task. A more complex task may have many commits; this is up to you.
 
