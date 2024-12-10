@@ -14,11 +14,22 @@
     <ul class="list-group">
 
         <li class="list-group-item">
-            <a asp-action="Create" asp-controller="TodoItem" asp-route-todoListId="@Model.TodoListId">
-                <strong>Add New Item</strong>
-            </a>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <a asp-action="Create" asp-controller="TodoItem" asp-route-todoListId="@Model.TodoListId">
+                        <strong>Add New Item</strong>
+                    </a>
+                </div>
+
+                <div class="ms-auto">
+                    <button id="toggleCompleted" class="btn btn-secondary" onclick="toggleCompletedItems()">
+                        Completed (@Model.Items.Count(item => item.IsDone))
+                    </button>
+                </div>
+            </div>
+
         </li>
-        
+
         @{
             var importanceOrder = new[] { Importance.High, Importance.Medium, Importance.Low };
         }
@@ -41,35 +52,43 @@
                     break;
             }
 
-            <li class="list-group-item @contextualClass">
-                
+            <li class="list-group-item @contextualClass @(item.IsDone ? "completed-item" : "")">
                 <div class="row">
 
-                <div class="col-md-8">
-                    <a asp-action="Edit" asp-controller="TodoItem" asp-route-todoItemId="@item.TodoItemId">
+                    <div class="col-md-8">
+                        <a asp-action="Edit" asp-controller="TodoItem" asp-route-todoItemId="@item.TodoItemId">
 
-                        @if (item.IsDone)
-                        {
-                            <s>@item.Title</s>
-                        }
-                        else
-                        {
-                            <text>@item.Title</text>
-                        }
-                    </a>
-                </div>
+                            @if (item.IsDone)
+                            {
+                                <s>@item.Title</s>
+                            }
+                            else
+                            {
+                                <text>@item.Title</text>
+                            }
+                        </a>
+                    </div>
 
-                <div class="col-md-4 text-right">
-                    <small>
-                        @item.ResponsibleParty.UserName
+                    <div class="col-md-4 text-right">
+                        <small>
+                            @item.ResponsibleParty.UserName
 
-                        <img src="https://www.gravatar.com/avatar/@Gravatar.GetHash(item.ResponsibleParty.Email)?s=30"/>
+                            <img src="https://www.gravatar.com/avatar/@Gravatar.GetHash(item.ResponsibleParty.Email)?s=30"/>
 
-                    </small>
-                </div>
+                        </small>
+                    </div>
                 </div>
 
             </li>
         }
     </ul>
 </div>
+
+<script>
+    function toggleCompletedItems() {
+        const completedItems = document.querySelectorAll(".completed-item");
+        completedItems.forEach(item => {
+            item.style.display = (item.style.display === "none") ? "" : "none";
+        });
+    }
+</script>
