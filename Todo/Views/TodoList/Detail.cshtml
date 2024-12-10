@@ -18,8 +18,14 @@
                 <strong>Add New Item</strong>
             </a>
         </li>
+        
+        @{
+            var importanceOrder = new[] { Importance.High, Importance.Medium, Importance.Low };
+        }
 
-        @foreach (var item in Model.Items)
+        @* @foreach (var item in Model.Items.OrderByDescending(item => item.Importance))) *@
+
+        @foreach (var item in Model.Items.OrderBy(item => Array.IndexOf(importanceOrder, item.Importance)))
         {
             string contextualClass;
             switch (item.Importance)
