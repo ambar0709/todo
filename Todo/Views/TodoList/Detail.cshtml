@@ -10,33 +10,33 @@
 <h2>@ViewData["Title"]</h2>
 
 <div class="col-md-6">
-
-    <ul class="list-group">
-
-        <li class="list-group-item">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-6 text-left">
                     <a asp-action="Create" asp-controller="TodoItem" asp-route-todoListId="@Model.TodoListId">
                         <strong>Add New Item</strong>
                     </a>
                 </div>
-
-                <div class="ms-auto">
-                    <button id="toggleCompleted" class="btn btn-secondary" onclick="toggleCompletedItems()">
-                        Completed (@Model.Items.Count(item => item.IsDone))
-                    </button>
-                </div>
             </div>
+        </div>
+    </div>
 
+    <ul class="list-group">
+        <li class="list-group-item">
+            <div class="text-right">
+                <label for="sortOptions" class="form-label">Sort By:</label>
+                <select id="sortOptions" class="form-select" onchange="window.location.href=this.value;">
+                    <option value="@Url.Action("Detail", new { todoListId = Model.TodoListId, sortBy = "importance", order = "asc" })">Importance (Asc)</option>
+                    <option value="@Url.Action("Detail", new { todoListId = Model.TodoListId, sortBy = "importance", order = "desc" })">Importance (Desc)</option>
+                    <option value="@Url.Action("Detail", new { todoListId = Model.TodoListId, sortBy = "rank", order = "asc" })">Rank (Asc)</option>
+                    <option value="@Url.Action("Detail", new { todoListId = Model.TodoListId, sortBy = "rank", order = "desc" })">Rank (Desc)</option>
+                </select>
+            </div>
         </li>
-
-        @{
-            var importanceOrder = new[] { Importance.High, Importance.Medium, Importance.Low };
-        }
-
         @* @foreach (var item in Model.Items.OrderByDescending(item => item.Importance))) *@
 
-        @foreach (var item in Model.Items.OrderBy(item => Array.IndexOf(importanceOrder, item.Importance)))
+        @foreach (var item in Model.Items)
         {
             string contextualClass;
             switch (item.Importance)
@@ -54,7 +54,6 @@
 
             <li class="list-group-item @contextualClass @(item.IsDone ? "completed-item" : "")">
                 <div class="row">
-
                     <div class="col-md-8">
                         <a asp-action="Edit" asp-controller="TodoItem" asp-route-todoItemId="@item.TodoItemId">
 
@@ -73,7 +72,7 @@
                         <small>
                             @item.ResponsibleParty.UserName
 
-                            <img src="https://www.gravatar.com/avatar/@Gravatar.GetHash(item.ResponsibleParty.Email)?s=30"/>
+                            <img src="https://www.gravatar.com/avatar/@Gravatar.GetHash(item.ResponsibleParty.Email)?s=30" />
 
                         </small>
                     </div>
@@ -82,6 +81,11 @@
             </li>
         }
     </ul>
+    <div>
+        <button id="toggleCompleted" class="btn btn-secondary" onclick="toggleCompletedItems()">
+            Completed (@Model.Items.Count(item => item.IsDone))
+        </button>
+    </div>
 </div>
 
 <script>
@@ -91,4 +95,19 @@
             item.style.display = (item.style.display === "none") ? "" : "none";
         });
     }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const sortBy = urlParams.get("sortBy") || "importance"; // Default to 'importance'
+        const order = urlParams.get("order") || "asc"; // Default to 'asc'
+
+        const dropdown = document.getElementById("sortOptions");
+        for (const option of dropdown.options) {
+            if (option.value.includes(`sortBy=${sortBy}`) && option.value.includes(`order=${order}`)) {
+                option.selected = true;
+                break;
+            }
+        }
+    });
+
 </script>

@@ -1,4 +1,8 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -31,9 +35,26 @@ namespace Todo.Controllers
             return View(viewmodel);
         }
 
-        public IActionResult Detail(int todoListId)
+        public IActionResult Detail(int todoListId, string sortBy = null, string order = "asc")
         {
             var todoList = dbContext.SingleTodoList(todoListId);
+
+            IEnumerable<TodoItem> items = todoList.Items;
+
+            if (sortBy == "importance")
+            {
+                var importanceOrder = new[] { Importance.High, Importance.Medium, Importance.Low };
+                items = order == "asc"
+                    ? items.OrderByDescending(item => Array.IndexOf(importanceOrder, item.Importance))
+                    : items.OrderBy(item => Array.IndexOf(importanceOrder, item.Importance));
+            }
+            else if (sortBy == "rank")
+            {
+                items = order == "asc" ? items.OrderByDescending(item => item.Rank) : items.OrderBy(item => item.Rank);
+            }
+
+            todoList.Items = items.ToList();
+
             var viewmodel = TodoListDetailViewmodelFactory.Create(todoList);
             return View(viewmodel);
         }
