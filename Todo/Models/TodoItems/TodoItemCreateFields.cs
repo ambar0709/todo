@@ -8,6 +8,8 @@ namespace Todo.Models.TodoItems
         public string Title { get; set; }
         public string TodoListTitle { get; set; }
         public string ResponsiblePartyId { get; set; }
+
+        public short Rank { get; set; }
         public Importance Importance { get; set; } = Importance.Medium;
 
         public TodoItemCreateFields() { }

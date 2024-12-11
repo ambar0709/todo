@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Todo.Data
+@using Todo.Data.Entities
+@using Todo.Views.TodoItem
+@model Todo.Models.TodoItems.TodoItemCreateFields
+
+@inject ApplicationDbContext dbContext
+
+
+<form asp-action="Create" asp-controller="TodoItem" method="post">
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.TodoListId)
+
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Importance"></label>
+        @Html.DropDownListFor(
+                 m => m.Importance,
+                 SelectListConvenience.ImportanceSelectListItems,
+                 new { @class = "form-control" }
+                 )
+        <span asp-validation-for="Importance" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <input asp-for="Rank" /> @Html.DisplayNameFor(m => m.Rank)
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ResponsiblePartyId">Owner</label>
+        @Html.DropDownListFor(
+                 m => m.ResponsiblePartyId,
+                 dbContext.UserSelectListItems(),
+                 new { @class = "form-control" }
+                 )
+        <span asp-validation-for="ResponsiblePartyId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Add Item</button>
+    </div>
+</form>

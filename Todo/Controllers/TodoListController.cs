@@ -35,12 +35,12 @@ namespace Todo.Controllers
             return View(viewmodel);
         }
 
-        public IActionResult Detail(int todoListId, string sortBy = null, string order = "asc")
+        public IActionResult Detail(int todoListId, string sortBy = null, string order = "desc")
         {
             var todoList = dbContext.SingleTodoList(todoListId);
 
             IEnumerable<TodoItem> items = todoList.Items;
-
+            sortBy = sortBy ?? "importance";
             if (sortBy == "importance")
             {
                 var importanceOrder = new[] { Importance.High, Importance.Medium, Importance.Low };

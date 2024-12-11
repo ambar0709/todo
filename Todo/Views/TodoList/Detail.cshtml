@@ -9,6 +9,8 @@
 
 <h2>@ViewData["Title"]</h2>
 
+
+
 <div class="col-md-6">
     <div class="row">
         <div class="col-xs-12">
@@ -17,6 +19,14 @@
                     <a asp-action="Create" asp-controller="TodoItem" asp-route-todoListId="@Model.TodoListId">
                         <strong>Add New Item</strong>
                     </a>
+
+                    <div>
+                        @Html.Partial("../TodoItem/_AddTodoItemPartial", new Todo.Models.TodoItems.TodoItemCreateFields
+                   {
+                       TodoListId = Model.TodoListId
+                   })
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -27,6 +37,7 @@
             <div class="text-right">
                 <label for="sortOptions" class="form-label">Sort By:</label>
                 <select id="sortOptions" class="form-select" onchange="window.location.href=this.value;">
+                    <option>Select</option>
                     <option value="@Url.Action("Detail", new { todoListId = Model.TodoListId, sortBy = "importance", order = "asc" })">Importance (Asc)</option>
                     <option value="@Url.Action("Detail", new { todoListId = Model.TodoListId, sortBy = "importance", order = "desc" })">Importance (Desc)</option>
                     <option value="@Url.Action("Detail", new { todoListId = Model.TodoListId, sortBy = "rank", order = "asc" })">Rank (Asc)</option>
@@ -86,6 +97,7 @@
             Completed (@Model.Items.Count(item => item.IsDone))
         </button>
     </div>
+
 </div>
 
 <script>
@@ -99,7 +111,7 @@
     document.addEventListener("DOMContentLoaded", () => {
         const urlParams = new URLSearchParams(window.location.search);
         const sortBy = urlParams.get("sortBy") || "importance"; // Default to 'importance'
-        const order = urlParams.get("order") || "asc"; // Default to 'asc'
+        const order = urlParams.get("order") || "desc"; // Default to 'asc'
 
         const dropdown = document.getElementById("sortOptions");
         for (const option of dropdown.options) {
