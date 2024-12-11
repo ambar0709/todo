@@ -9,8 +9,6 @@
 
 <h2>@ViewData["Title"]</h2>
 
-
-
 <div class="col-md-6">
     <div class="row">
         <div class="col-xs-12">
@@ -37,11 +35,10 @@
             <div class="text-right">
                 <label for="sortOptions" class="form-label">Sort By:</label>
                 <select id="sortOptions" class="form-select" onchange="window.location.href=this.value;">
-                    <option>Select</option>
-                    <option value="@Url.Action("Detail", new { todoListId = Model.TodoListId, sortBy = "importance", order = "asc" })">Importance (Asc)</option>
                     <option value="@Url.Action("Detail", new { todoListId = Model.TodoListId, sortBy = "importance", order = "desc" })">Importance (Desc)</option>
-                    <option value="@Url.Action("Detail", new { todoListId = Model.TodoListId, sortBy = "rank", order = "asc" })">Rank (Asc)</option>
+                    <option value="@Url.Action("Detail", new { todoListId = Model.TodoListId, sortBy = "importance", order = "asc" })">Importance (Asc)</option>
                     <option value="@Url.Action("Detail", new { todoListId = Model.TodoListId, sortBy = "rank", order = "desc" })">Rank (Desc)</option>
+                    <option value="@Url.Action("Detail", new { todoListId = Model.TodoListId, sortBy = "rank", order = "asc" })">Rank (Asc)</option>
                 </select>
             </div>
         </li>
@@ -49,6 +46,10 @@
 
         @foreach (var item in Model.Items)
         {
+            var emailHash = Gravatar.GetHash(item.ResponsibleParty.Email); // Assuming you have a Gravatar hash utility method
+            var userId = item.ResponsibleParty.Email.Replace("@", "").Replace(".", ""); // Create a safe ID for HTML elements
+
+
             string contextualClass;
             switch (item.Importance)
             {
@@ -78,15 +79,22 @@
                             }
                         </a>
                     </div>
-
+                   @{
+                    var profile = await @Gravatar.GetGravatarUser(item.ResponsibleParty.Email);
                     <div class="col-md-4 text-right">
-                        <small>
-                            @item.ResponsibleParty.UserName
-
-                            <img src="https://www.gravatar.com/avatar/@Gravatar.GetHash(item.ResponsibleParty.Email)?s=30" />
-
-                        </small>
-                    </div>
+    <small>
+        <div class="row">
+            <div class="col-xs-9 text-left">
+                <div class="text-uppercase">@profile.DisplayName</div>
+                <div>@profile.EmailAddress</div>
+            </div>
+            <div class="col-xs-3 text-right">
+                <img src="@profile.AvatarUrl?s=30" class="img-circle" alt="Avatar" />
+            </div>
+        </div>
+    </small>
+</div>
+                    }
                 </div>
 
             </li>

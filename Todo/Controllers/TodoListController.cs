@@ -50,7 +50,7 @@ namespace Todo.Controllers
             }
             else if (sortBy == "rank")
             {
-                items = order == "asc" ? items.OrderByDescending(item => item.Rank) : items.OrderBy(item => item.Rank);
+                items = order == "asc" ? items.OrderBy(item => item.Rank) : items.OrderByDescending(item => item.Rank);
             }
 
             todoList.Items = items.ToList();
